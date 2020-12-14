@@ -8,46 +8,55 @@ import net.kyori.text.Component;
 
 import java.util.UUID;
 
-public class VelocityUser implements User {
+public class VelocityUser implements User
+{
 
     private final ProxySyncPlugin plugin;
     private final Player player;
 
-    public VelocityUser(ProxySyncPlugin plugin, Player player) {
+    public VelocityUser( ProxySyncPlugin plugin, Player player )
+    {
         this.plugin = plugin;
         this.player = player;
     }
 
     @Override
-    public UUID getUniqueId() {
+    public UUID getUniqueId()
+    {
         return this.player.getUniqueId();
     }
 
     @Override
-    public String getUsername() {
+    public String getUsername()
+    {
         return this.player.getUsername();
     }
 
     @Override
-    public String getIp() {
+    public String getIp()
+    {
         return this.player.getRemoteAddress().toString();
     }
 
     @Override
-    public Proxy getProxy() {
+    public Proxy getProxy()
+    {
         return this.plugin.getCurrentProxy();
     }
 
     @Override
-    public String getServer() {
-        if (!this.player.getCurrentServer().isPresent()) {
+    public String getServer()
+    {
+        if ( !this.player.getCurrentServer().isPresent() )
+        {
             return null;
         }
         return this.player.getCurrentServer().get().getServerInfo().getName();
     }
 
     @Override
-    public void sendMessage(Component component) {
-        this.player.sendMessage(component);
+    public void sendMessage( Component component )
+    {
+        this.player.sendMessage( component );
     }
 }

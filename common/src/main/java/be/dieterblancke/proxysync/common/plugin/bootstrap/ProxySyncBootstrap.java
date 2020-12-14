@@ -7,7 +7,8 @@ import be.dieterblancke.proxysync.common.plugin.scheduler.SchedulerAdapter;
 import java.io.InputStream;
 import java.nio.file.Path;
 
-public interface ProxySyncBootstrap {
+public interface ProxySyncBootstrap
+{
 
     /**
      * Gets a wrapped logger instance for the platform.
@@ -43,5 +44,5 @@ public interface ProxySyncBootstrap {
      * @param path the path of the file
      * @return the file as an input stream
      */
-    InputStream getResourceStream(String path);
+    InputStream getResourceStream( String path );
 }

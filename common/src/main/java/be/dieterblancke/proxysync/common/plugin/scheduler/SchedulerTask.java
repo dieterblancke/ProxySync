@@ -3,7 +3,8 @@ package be.dieterblancke.proxysync.common.plugin.scheduler;
 /**
  * Represents a scheduled task
  */
-public interface SchedulerTask {
+public interface SchedulerTask
+{
     /**
      * Cancel the task.
      */

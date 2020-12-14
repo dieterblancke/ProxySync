@@ -1,7 +1,7 @@
 package be.dieterblancke.proxysync.common.event;
 
-import be.dieterblancke.proxysync.api.event.ProxySyncEvent;
 import be.dieterblancke.proxysync.api.event.EventSubscription;
+import be.dieterblancke.proxysync.api.event.ProxySyncEvent;
 import net.kyori.event.EventSubscriber;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -9,7 +9,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-public class ProxySyncEventSubscription<T extends ProxySyncEvent> implements EventSubscription<T>, EventSubscriber<T> {
+public class ProxySyncEventSubscription<T extends ProxySyncEvent> implements EventSubscription<T>, EventSubscriber<T>
+{
 
     /**
      * The event bus which created this handler
@@ -34,9 +35,10 @@ public class ProxySyncEventSubscription<T extends ProxySyncEvent> implements Eve
     /**
      * If this handler is active
      */
-    private final AtomicBoolean active = new AtomicBoolean(true);
+    private final AtomicBoolean active = new AtomicBoolean( true );
 
-    public ProxySyncEventSubscription(AbstractEventBus eventBus, Class<T> eventClass, Consumer<? super T> consumer, @Nullable Object plugin) {
+    public ProxySyncEventSubscription( AbstractEventBus eventBus, Class<T> eventClass, Consumer<? super T> consumer, @Nullable Object plugin )
+    {
         this.eventBus = eventBus;
         this.eventClass = eventClass;
         this.consumer = consumer;
@@ -44,42 +46,52 @@ public class ProxySyncEventSubscription<T extends ProxySyncEvent> implements Eve
     }
 
     @Override
-    public void close() {
+    public void close()
+    {
         // already unregistered
-        if (!this.active.getAndSet(false)) {
+        if ( !this.active.getAndSet( false ) )
+        {
             return;
         }
 
-        this.eventBus.unregisterHandler(this);
+        this.eventBus.unregisterHandler( this );
     }
 
     @Override
-    public void invoke(@NonNull T event) throws Throwable {
-        try {
-            this.consumer.accept(event);
-        } catch (Throwable t) {
+    public void invoke( @NonNull T event ) throws Throwable
+    {
+        try
+        {
+            this.consumer.accept( event );
+        }
+        catch ( Throwable t )
+        {
 
-            this.eventBus.getPlugin().getLogger().warn("Unable to pass event " + event.getClass().getSimpleName() + " to handler " + this.consumer.getClass().getName());
+            this.eventBus.getPlugin().getLogger().warn( "Unable to pass event " + event.getClass().getSimpleName() + " to handler " + this.consumer.getClass().getName() );
             t.printStackTrace();
         }
     }
 
     @Override
-    public boolean isActive() {
+    public boolean isActive()
+    {
         return this.active.get();
     }
 
     @Override
-    public @NonNull Class<T> getEventClass() {
+    public @NonNull Class<T> getEventClass()
+    {
         return this.eventClass;
     }
 
     @Override
-    public @NonNull Consumer<? super T> getHandler() {
+    public @NonNull Consumer<? super T> getHandler()
+    {
         return this.consumer;
     }
 
-    public @Nullable Object getPlugin() {
+    public @Nullable Object getPlugin()
+    {
         return this.plugin;
     }
 }

@@ -1,11 +1,12 @@
 package be.dieterblancke.proxysync.api;
 
+import be.dieterblancke.proxysync.api.event.redis.RedisMessageEvent;
 import be.dieterblancke.proxysync.api.model.proxy.ProxyManager;
 import be.dieterblancke.proxysync.api.model.user.UserManager;
-import be.dieterblancke.proxysync.api.event.redis.RedisMessageEvent;
 import net.kyori.text.Component;
 
-public interface ProxySyncApi {
+public interface ProxySyncApi
+{
 
     /**
      * Get total player count.
@@ -33,14 +34,14 @@ public interface ProxySyncApi {
      *
      * @param component to send
      */
-    void broadcastToAllProxies(Component component);
+    void broadcastToAllProxies( Component component );
 
     /**
      * Subscribe to specific redis channels to trigger a {@link RedisMessageEvent} for.
      *
      * @param channels to subscribe to
      */
-    void subscribeToChannels(String... channels);
+    void subscribeToChannels( String... channels );
 
     /**
      * Send a message over a specific redis channel.
@@ -48,6 +49,6 @@ public interface ProxySyncApi {
      * @param channel to send the message over
      * @param message to send
      */
-    void publishToChannel(String channel, String message);
+    void publishToChannel( String channel, String message );
 
 }

@@ -18,7 +18,8 @@ import net.kyori.text.TextComponent;
 
 import java.util.concurrent.TimeUnit;
 
-public abstract class AbstractProxySyncPlugin implements ProxySyncPlugin, ProxySyncApi {
+public abstract class AbstractProxySyncPlugin implements ProxySyncPlugin, ProxySyncApi
+{
 
     private Configuration configuration;
 
@@ -30,32 +31,34 @@ public abstract class AbstractProxySyncPlugin implements ProxySyncPlugin, ProxyS
 
     private SchedulerTask heartbeatTask;
 
-    public final void enable() {
+    public final void enable()
+    {
         // load configuration
-        getLogger().info("Loading configuration...");
-        this.configuration = Configuration.load(this);
+        getLogger().info( "Loading configuration..." );
+        this.configuration = Configuration.load( this );
 
         // redis connection
-        this.redisManager = RedisManagerFactory.create(this);
-        this.redisDataManager = new RedisDataManager(this);
-        this.subscribeToChannels("ProxySync-all", "ProxySync-" + getConfiguration().getProxyConfiguration().getProxyId());
+        this.redisManager = RedisManagerFactory.create( this );
+        this.redisDataManager = new RedisDataManager( this );
+        this.subscribeToChannels( "proxysync-all", "proxysync-" + getConfiguration().getProxyConfiguration().getProxyId() );
 
         // managers
-        this.userManager = new StandardUserManager(this);
-        this.proxyManager = new StandardProxyManager(this);
+        this.userManager = new StandardUserManager( this );
+        this.proxyManager = new StandardProxyManager( this );
 
         // tasks
         int heartbeatInterval = this.getConfiguration().getProxyConfiguration().getHeartbeatInterval();
-        this.heartbeatTask = this.getSchedulerAdapter().asyncRepeating(new HeartbeatTask(this), heartbeatInterval, TimeUnit.SECONDS);
+        this.heartbeatTask = this.getSchedulerAdapter().asyncRepeating( new HeartbeatTask( this ), heartbeatInterval, TimeUnit.SECONDS );
 
         // platform listeners
         this.registerPlatformListeners();
 
-        getLogger().info("Successfully enabled.");
+        getLogger().info( "Successfully enabled." );
     }
 
-    public final void disable() {
-        getLogger().info("Starting shutdown process...");
+    public final void disable()
+    {
+        getLogger().info( "Starting shutdown process..." );
 
         // tasks
         this.heartbeatTask.cancel();
@@ -68,70 +71,85 @@ public abstract class AbstractProxySyncPlugin implements ProxySyncPlugin, ProxyS
         this.redisDataManager.cleanupProxy();
         this.redisManager.closeConnections();
 
-        getLogger().info("Goodbye!");
+        getLogger().info( "Goodbye!" );
     }
 
     public abstract void registerPlatformListeners();
 
     @Override
-    public Configuration getConfiguration() {
+    public Configuration getConfiguration()
+    {
         return this.configuration;
     }
 
     @Override
-    public PluginLogger getLogger() {
+    public PluginLogger getLogger()
+    {
         return getBootstrap().getPluginLogger();
     }
 
     @Override
-    public SchedulerAdapter getSchedulerAdapter() {
+    public SchedulerAdapter getSchedulerAdapter()
+    {
         return getBootstrap().getSchedulerAdapter();
     }
 
     @Override
-    public RedisManager getRedisManager() {
+    public RedisManager getRedisManager()
+    {
         return this.redisManager;
     }
 
     @Override
-    public RedisDataManager getRedisDataManager() {
+    public RedisDataManager getRedisDataManager()
+    {
         return this.redisDataManager;
     }
 
     @Override
-    public UserManager getUserManager() {
+    public UserManager getUserManager()
+    {
         return this.userManager;
     }
 
     @Override
-    public ProxyManager getProxyManager() {
+    public ProxyManager getProxyManager()
+    {
         return this.proxyManager;
     }
 
     @Override
-    public int getTotalUserCount() {
+    public int getTotalUserCount()
+    {
         return this.redisDataManager.getTotalPlayerCount();
     }
 
     @Override
-    public ProxySyncApi getApi() {
+    public ProxySyncApi getApi()
+    {
         return this;
     }
 
     @Override
-    public void broadcastToAllProxies(Component component) {
-        final String content = ((TextComponent) component).content();
-        if(content.isEmpty()) return;
-        this.publishToChannel("ProxySync-all", "bridger:broadcast-" + content);
+    public void broadcastToAllProxies( Component component )
+    {
+        final String content = ( (TextComponent) component ).content();
+        if ( content.isEmpty() )
+        {
+            return;
+        }
+        this.publishToChannel( "proxysync-all", "proxysync:broadcast-" + content );
     }
 
     @Override
-    public void subscribeToChannels(String... channels) {
-        this.getRedisManager().subscribeToChannels(channels);
+    public void subscribeToChannels( String... channels )
+    {
+        this.getRedisManager().subscribeToChannels( channels );
     }
 
     @Override
-    public void publishToChannel(String channel, String message) {
-        this.getRedisManager().publishToChannel(channel, message);
+    public void publishToChannel( String channel, String message )
+    {
+        this.getRedisManager().publishToChannel( channel, message );
     }
 }

@@ -6,32 +6,39 @@ import be.dieterblancke.proxysync.common.plugin.ProxySyncPlugin;
 
 import java.util.UUID;
 
-public class StandardUserManager implements UserManager {
+public class StandardUserManager implements UserManager
+{
 
     private final ProxySyncPlugin plugin;
 
-    public StandardUserManager(ProxySyncPlugin plugin) {
+    public StandardUserManager( ProxySyncPlugin plugin )
+    {
         this.plugin = plugin;
     }
 
     @Override
-    public User getUser(UUID uniqueId) {
-        if (this.plugin.getCurrentProxy().hasUser(uniqueId)) {
-            return this.plugin.getCurrentProxy().getUser(uniqueId);
+    public User getUser( UUID uniqueId )
+    {
+        if ( this.plugin.getCurrentProxy().hasUser( uniqueId ) )
+        {
+            return this.plugin.getCurrentProxy().getUser( uniqueId );
         }
-        return new BridgedUser(uniqueId, this.plugin.getRedisDataManager());
+        return new BridgedUser( uniqueId, this.plugin.getRedisDataManager() );
     }
 
     @Override
-    public User getUser(String username) {
+    public User getUser( String username )
+    {
         return null; // todo
     }
 
     @Override
-    public boolean isUserOnline(UUID uniqueId) {
-        if (this.plugin.getCurrentProxy().hasUser(uniqueId)) {
+    public boolean isUserOnline( UUID uniqueId )
+    {
+        if ( this.plugin.getCurrentProxy().hasUser( uniqueId ) )
+        {
             return true;
         }
-        return this.plugin.getRedisDataManager().isPlayerOnline(uniqueId);
+        return this.plugin.getRedisDataManager().isPlayerOnline( uniqueId );
     }
 }

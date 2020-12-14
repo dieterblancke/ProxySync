@@ -19,75 +19,91 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ProxySyncBungeeBootstrap extends Plugin implements ProxySyncBootstrap {
+public class ProxySyncBungeeBootstrap extends Plugin implements ProxySyncBootstrap
+{
 
     private final PluginLogger logger;
     private final SchedulerAdapter schedulerAdapter;
     private final ProxySyncBungeePlugin plugin;
 
-    public ProxySyncBungeeBootstrap() {
-        this.logger = new JavaLoggerWrapper(this.getLogger());
-        this.schedulerAdapter = new BungeeSchedulerAdapter(this);
-        this.plugin = new ProxySyncBungeePlugin(this);
+    public ProxySyncBungeeBootstrap()
+    {
+        this.logger = new JavaLoggerWrapper( this.getLogger() );
+        this.schedulerAdapter = new BungeeSchedulerAdapter( this );
+        this.plugin = new ProxySyncBungeePlugin( this );
     }
 
     @Override
-    public void onEnable() {
+    public void onEnable()
+    {
         this.plugin.enable();
 
-        this.getProxy().getPluginManager().registerCommand(this, new DebugCommand(this.plugin));
-        this.plugin.getEventBus().subscribe(UserJoinEvent.class, (event) -> {
-            this.getProxy().broadcast(new TextComponent(ChatColor.LIGHT_PURPLE + "Event listener triggered!"));
-        });
+        this.getProxy().getPluginManager().registerCommand( this, new DebugCommand( this.plugin ) );
+        this.plugin.getEventBus().subscribe( UserJoinEvent.class, ( event ) ->
+        {
+            this.getProxy().broadcast( new TextComponent( ChatColor.LIGHT_PURPLE + "Event listener triggered!" ) );
+        } );
     }
 
     @Override
-    public void onDisable() {
+    public void onDisable()
+    {
         this.plugin.disable();
     }
 
-    public PluginLogger getPluginLogger() {
+    public PluginLogger getPluginLogger()
+    {
         return this.logger;
     }
 
-    public SchedulerAdapter getSchedulerAdapter() {
+    public SchedulerAdapter getSchedulerAdapter()
+    {
         return this.schedulerAdapter;
     }
 
-    public PlatformType getPlatformType() {
+    public PlatformType getPlatformType()
+    {
         return PlatformType.BUNGEECORD;
     }
 
-    public Path getDataDirectory() {
+    public Path getDataDirectory()
+    {
         return super.getDataFolder().toPath();
     }
 
-    public InputStream getResourceStream(String path) {
-        return getClass().getResourceAsStream(path);
+    public InputStream getResourceStream( String path )
+    {
+        return getClass().getResourceAsStream( path );
     }
 
-    private static class DebugCommand extends Command {
+    private static class DebugCommand extends Command
+    {
 
         private final ProxySyncPlugin plugin;
 
-        public DebugCommand(ProxySyncPlugin plugin) {
-            super("debug");
+        public DebugCommand( ProxySyncPlugin plugin )
+        {
+            super( "debug" );
             this.plugin = plugin;
         }
 
         @Override
-        public void execute(CommandSender commandSender, String[] args) {
+        public void execute( CommandSender commandSender, String[] args )
+        {
 
-            if (args.length == 0) {
-                commandSender.sendMessage(new TextComponent(ChatColor.GOLD + "=== Debug Info ==="));
+            if ( args.length == 0 )
+            {
+                commandSender.sendMessage( new TextComponent( ChatColor.GOLD + "=== Debug Info ===" ) );
 
                 ProxySyncApi api = this.plugin.getApi();
-                commandSender.sendMessage(new TextComponent(ChatColor.GRAY + "Total user count: " + ChatColor.GOLD + api.getTotalUserCount()));
+                commandSender.sendMessage( new TextComponent( ChatColor.GRAY + "Total user count: " + ChatColor.GOLD + api.getTotalUserCount() ) );
 
-                Set<String> proxiesColored = api.getProxyManager().getActiveProxies().stream().map(proxyId -> (api.getProxyManager().getCurrentProxy().getId().equals(proxyId) ? ChatColor.GOLD : ChatColor.GRAY ) + proxyId).collect(Collectors.toSet());
-                commandSender.sendMessage(new TextComponent(ChatColor.GRAY + "Proxies: " + String.join(ChatColor.GRAY + ", ", proxiesColored)));
-            } else if(args.length == 1 && args[0].equals("event")) {
-                this.plugin.getEventBus().post(new UserJoinEvent(null));
+                Set<String> proxiesColored = api.getProxyManager().getActiveProxies().stream().map( proxyId -> ( api.getProxyManager().getCurrentProxy().getId().equals( proxyId ) ? ChatColor.GOLD : ChatColor.GRAY ) + proxyId ).collect( Collectors.toSet() );
+                commandSender.sendMessage( new TextComponent( ChatColor.GRAY + "Proxies: " + String.join( ChatColor.GRAY + ", ", proxiesColored ) ) );
+            }
+            else if ( args.length == 1 && args[0].equals( "event" ) )
+            {
+                this.plugin.getEventBus().post( new UserJoinEvent( null ) );
             }
         }
     }

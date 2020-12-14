@@ -11,46 +11,52 @@ import java.util.WeakHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
-public class VelocitySchedulerAdapter implements SchedulerAdapter {
+public class VelocitySchedulerAdapter implements SchedulerAdapter
+{
 
     private final ProxySyncVelocityBootstrap bootstrap;
     private final Scheduler scheduler;
     private final Executor executor;
-    private final Set<ScheduledTask> tasks = Collections.newSetFromMap(new WeakHashMap<>());
+    private final Set<ScheduledTask> tasks = Collections.newSetFromMap( new WeakHashMap<>() );
 
-    public VelocitySchedulerAdapter(ProxySyncVelocityBootstrap bootstrap) {
+    public VelocitySchedulerAdapter( ProxySyncVelocityBootstrap bootstrap )
+    {
         this.bootstrap = bootstrap;
         this.scheduler = this.bootstrap.getProxyServer().getScheduler();
-        this.executor = r -> this.scheduler.buildTask(bootstrap, r).schedule();
+        this.executor = r -> this.scheduler.buildTask( bootstrap, r ).schedule();
     }
 
     @Override
-    public void executeAsync(Runnable task) {
-        this.executor.execute(task);
+    public void executeAsync( Runnable task )
+    {
+        this.executor.execute( task );
     }
 
     @Override
-    public SchedulerTask asyncLater(Runnable task, long delay, TimeUnit unit) {
-        ScheduledTask st = this.scheduler.buildTask(this.bootstrap, task)
-                .delay(delay, unit)
+    public SchedulerTask asyncLater( Runnable task, long delay, TimeUnit unit )
+    {
+        ScheduledTask st = this.scheduler.buildTask( this.bootstrap, task )
+                .delay( delay, unit )
                 .schedule();
 
-        this.tasks.add(st);
+        this.tasks.add( st );
         return st::cancel;
     }
 
     @Override
-    public SchedulerTask asyncRepeating(Runnable task, long interval, TimeUnit unit) {
-        ScheduledTask st = this.scheduler.buildTask(this.bootstrap, task)
-                .repeat(interval, unit)
+    public SchedulerTask asyncRepeating( Runnable task, long interval, TimeUnit unit )
+    {
+        ScheduledTask st = this.scheduler.buildTask( this.bootstrap, task )
+                .repeat( interval, unit )
                 .schedule();
 
-        this.tasks.add(st);
+        this.tasks.add( st );
         return st::cancel;
     }
 
     @Override
-    public void shutdown() {
-        tasks.forEach(ScheduledTask::cancel);
+    public void shutdown()
+    {
+        tasks.forEach( ScheduledTask::cancel );
     }
 }

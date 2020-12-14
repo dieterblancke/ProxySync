@@ -11,21 +11,25 @@ public class UserServerChangeEvent implements ProxySyncEvent
     private final String serverFrom;
     private final String serverTo;
 
-    public UserServerChangeEvent(@NonNull User user, String serverFrom, String serverTo) {
+    public UserServerChangeEvent( @NonNull User user, String serverFrom, String serverTo )
+    {
         this.user = user;
         this.serverFrom = serverFrom;
         this.serverTo = serverTo;
     }
 
-    public @NonNull User getUser() {
+    public @NonNull User getUser()
+    {
         return user;
     }
 
-    public String getServerFrom() {
+    public String getServerFrom()
+    {
         return serverFrom;
     }
 
-    public String getServerTo() {
+    public String getServerTo()
+    {
         return serverTo;
     }
 }

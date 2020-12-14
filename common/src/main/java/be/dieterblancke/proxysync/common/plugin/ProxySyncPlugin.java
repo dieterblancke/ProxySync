@@ -6,13 +6,14 @@ import be.dieterblancke.proxysync.api.model.user.User;
 import be.dieterblancke.proxysync.api.platform.UserProvider;
 import be.dieterblancke.proxysync.common.config.Configuration;
 import be.dieterblancke.proxysync.common.event.AbstractEventBus;
-import be.dieterblancke.proxysync.common.plugin.logging.PluginLogger;
 import be.dieterblancke.proxysync.common.plugin.bootstrap.ProxySyncBootstrap;
+import be.dieterblancke.proxysync.common.plugin.logging.PluginLogger;
 import be.dieterblancke.proxysync.common.plugin.scheduler.SchedulerAdapter;
 import be.dieterblancke.proxysync.common.redis.RedisDataManager;
 import be.dieterblancke.proxysync.common.redis.RedisManager;
 
-public interface ProxySyncPlugin {
+public interface ProxySyncPlugin
+{
 
     ProxySyncBootstrap getBootstrap();
 

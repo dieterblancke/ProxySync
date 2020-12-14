@@ -9,11 +9,13 @@ public class UserLeaveEvent implements ProxySyncEvent
 
     private final User user;
 
-    public UserLeaveEvent(@NonNull User user) {
+    public UserLeaveEvent( @NonNull User user )
+    {
         this.user = user;
     }
 
-    public @NonNull User getUser() {
+    public @NonNull User getUser()
+    {
         return user;
     }
 

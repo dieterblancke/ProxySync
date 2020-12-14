@@ -5,15 +5,16 @@ import be.dieterblancke.proxysync.api.model.user.User;
 import java.util.Set;
 import java.util.UUID;
 
-public interface UserProvider<I, T extends User> {
+public interface UserProvider<I, T extends User>
+{
 
-    T get(UUID uniqueId);
+    T get( UUID uniqueId );
 
-    boolean has(UUID uniqueId);
+    boolean has( UUID uniqueId );
 
-    T add(I player);
+    T add( I player );
 
-    T remove(UUID uniqueId);
+    T remove( UUID uniqueId );
 
     Set<T> getAll();
 }

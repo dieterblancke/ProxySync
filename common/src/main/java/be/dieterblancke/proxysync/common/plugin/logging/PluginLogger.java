@@ -1,21 +1,25 @@
 package be.dieterblancke.proxysync.common.plugin.logging;
 
-public interface PluginLogger {
+public interface PluginLogger
+{
     /**
      * Log information
+     *
      * @param message to log
      */
-    void info(String message);
+    void info( String message );
 
     /**
      * Log warning
+     *
      * @param message to log
      */
-    void warn(String message);
+    void warn( String message );
 
     /**
      * Log severe error
+     *
      * @param message to log
      */
-    void severe(String message);
+    void severe( String message );
 }

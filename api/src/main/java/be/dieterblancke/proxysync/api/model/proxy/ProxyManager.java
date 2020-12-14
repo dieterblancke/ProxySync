@@ -2,7 +2,8 @@ package be.dieterblancke.proxysync.api.model.proxy;
 
 import java.util.Set;
 
-public interface ProxyManager {
+public interface ProxyManager
+{
 
     /**
      * Get proxy by identifier.
@@ -10,7 +11,7 @@ public interface ProxyManager {
      * @param proxyId of the proxy
      * @return instance of {@link Proxy} or null if not found
      */
-    Proxy getProxy(String proxyId);
+    Proxy getProxy( String proxyId );
 
     /**
      * Get the current EmeraldProxy.
@@ -25,7 +26,7 @@ public interface ProxyManager {
      * @param proxyId of the proxy
      * @return count of players (0 if no players or proxy not found)
      */
-    int getProxyUserCount(String proxyId);
+    int getProxyUserCount( String proxyId );
 
     /**
      * Gets a list of ids of all active proxy instances.
