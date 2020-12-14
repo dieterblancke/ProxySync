@@ -3,29 +3,38 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>bridger</artifactId>
-        <groupId>com.opennetworksmc</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <artifactId>ProxySync</artifactId>
+        <groupId>be.dieterblancke.proxysync</groupId>
+        <version>0.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>bridger-velocity</artifactId>
+    <artifactId>velocity</artifactId>
 
-    <name>Bridger-Velocity</name>
-    <description>Velocity implementation of Bridger</description>
+    <description>Velocity implementation of ProxySync</description>
+
+    <repositories>
+        <repository>
+            <id>velocity</id>
+            <url>https://nexus.velocitypowered.com/repository/maven-public/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>com.opennetworksmc</groupId>
-            <artifactId>bridger-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>be.dieterblancke.proxysync</groupId>
+            <artifactId>common</artifactId>
+            <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.velocitypowered</groupId>
             <artifactId>velocity-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
 
+    <build>
+        <finalName>ProxySync-${project.artifactId} v${project.version}</finalName>
+    </build>
 </project>

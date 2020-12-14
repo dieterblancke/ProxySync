@@ -1,4 +1,4 @@
-name: bridger-bungeecord
-main: com.opennetworksmc.bridger.bungee.BridgerBungeeBootstrap
+name: ProxySync-bungeecord
+main: be.dieterblancke.bridger.bungee.ProxySyncBungeeBootstrap
 version: 1.0
 author: goofydev

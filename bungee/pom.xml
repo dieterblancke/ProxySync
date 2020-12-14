@@ -3,16 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>bridger</artifactId>
-        <groupId>com.opennetworksmc</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <artifactId>ProxySync</artifactId>
+        <groupId>be.dieterblancke.proxysync</groupId>
+        <version>0.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>bridger-bungee</artifactId>
+    <artifactId>bungee</artifactId>
 
-    <name>Bridger-BungeeCord</name>
-    <description>BungeeCord implementation of Bridger</description>
+    <description>BungeeCord implementation of ProxySync</description>
 
     <repositories>
         <repository>
@@ -23,9 +22,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.opennetworksmc</groupId>
-            <artifactId>bridger-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>be.dieterblancke.proxysync</groupId>
+            <artifactId>common</artifactId>
+            <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>net.md-5</groupId>
@@ -48,4 +47,7 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <finalName>ProxySync-${project.artifactId} v${project.version}</finalName>
+    </build>
 </project>
