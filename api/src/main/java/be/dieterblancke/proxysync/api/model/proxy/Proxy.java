@@ -1,7 +1,7 @@
 package be.dieterblancke.proxysync.api.model.proxy;
 
 import be.dieterblancke.proxysync.api.model.user.User;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 
 import java.util.Optional;
 import java.util.Set;

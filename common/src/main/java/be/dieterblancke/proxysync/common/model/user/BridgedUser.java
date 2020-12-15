@@ -3,7 +3,7 @@ package be.dieterblancke.proxysync.common.model.user;
 import be.dieterblancke.proxysync.api.model.proxy.Proxy;
 import be.dieterblancke.proxysync.api.model.user.User;
 import be.dieterblancke.proxysync.common.redis.RedisDataManager;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 
 import java.util.UUID;
 

@@ -13,8 +13,8 @@ import be.dieterblancke.proxysync.common.redis.RedisDataManager;
 import be.dieterblancke.proxysync.common.redis.RedisManager;
 import be.dieterblancke.proxysync.common.redis.impl.RedisManagerFactory;
 import be.dieterblancke.proxysync.common.tasks.HeartbeatTask;
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +40,10 @@ public abstract class AbstractProxySyncPlugin implements ProxySyncPlugin, ProxyS
         // redis connection
         this.redisManager = RedisManagerFactory.create( this );
         this.redisDataManager = new RedisDataManager( this );
-        this.subscribeToChannels( "proxysync-all", "proxysync-" + getConfiguration().getProxyConfiguration().getProxyId() );
+        this.subscribeToChannels(
+                "proxysync-all",
+                "proxysync-" + getConfiguration().getProxyConfiguration().getProxyId()
+        );
 
         // managers
         this.userManager = new StandardUserManager( this );
@@ -133,7 +136,7 @@ public abstract class AbstractProxySyncPlugin implements ProxySyncPlugin, ProxyS
     @Override
     public void broadcastToAllProxies( Component component )
     {
-        final String content = ( (TextComponent) component ).content();
+        final String content = GsonComponentSerializer.gson().serialize( component );
         if ( content.isEmpty() )
         {
             return;

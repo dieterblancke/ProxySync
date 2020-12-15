@@ -47,7 +47,11 @@ public class StandaloneRedisManager implements RedisManager
             String info = connection.sync().info();
             connection.close();
 
-            String version = Arrays.stream( info.split( "\r\n" ) ).filter( s -> s.startsWith( "redis_version:" ) ).map( s -> s.split( ":" )[1] ).findFirst().orElse( null );
+            final String version = Arrays.stream( info.split( "\r\n" ) )
+                    .filter( s -> s.startsWith( "redis_version:" ) )
+                    .map( s -> s.split( ":" )[1] )
+                    .findFirst()
+                    .orElse( null );
             if ( version == null )
             {
                 throw new RuntimeException( "Unable to retrieve redis server version." );
@@ -180,5 +184,4 @@ public class StandaloneRedisManager implements RedisManager
             this.plugin.getEventBus().post( new RedisMessageEvent( channel, message ) );
         }
     }
-
 }

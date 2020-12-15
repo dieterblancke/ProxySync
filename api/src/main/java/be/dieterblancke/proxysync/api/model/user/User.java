@@ -1,7 +1,7 @@
 package be.dieterblancke.proxysync.api.model.user;
 
 import be.dieterblancke.proxysync.api.model.proxy.Proxy;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 
 import java.util.UUID;
 

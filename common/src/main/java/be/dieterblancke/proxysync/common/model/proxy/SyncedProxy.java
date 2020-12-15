@@ -3,7 +3,7 @@ package be.dieterblancke.proxysync.common.model.proxy;
 import be.dieterblancke.proxysync.api.model.proxy.Proxy;
 import be.dieterblancke.proxysync.api.model.user.User;
 import be.dieterblancke.proxysync.common.redis.RedisDataManager;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 
 import java.util.Optional;
 import java.util.Set;
@@ -83,6 +83,7 @@ public class SyncedProxy implements Proxy
     public void broadcastMessage( final Component component )
     {
         // todo
+        this.redisDataManager.broadcastToProxy( this.id, component );
     }
 
     @Override

@@ -3,8 +3,8 @@ package be.dieterblancke.proxysync.bungee;
 import be.dieterblancke.proxysync.api.model.proxy.Proxy;
 import be.dieterblancke.proxysync.api.model.user.User;
 import be.dieterblancke.proxysync.common.plugin.ProxySyncPlugin;
-import net.kyori.text.Component;
-import net.kyori.text.adapter.bungeecord.TextAdapter;
+import net.kyori.adventure.identity.Identity;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ProxyServer;
 
 import java.util.Optional;
@@ -59,11 +59,13 @@ public class BungeeProxy implements Proxy
         return this.plugin.getUserProvider().has( userName );
     }
 
-
     @Override
     public void broadcastMessage( final Component component )
     {
-        this.proxyServer.broadcast( TextAdapter.toBungeeCord( component ) );
+        ((ProxySyncBungeePlugin) plugin).getBungeeAudiences().players().sendMessage(
+                Identity.nil(),
+                component
+        );
     }
 
     @Override

@@ -8,6 +8,8 @@ import be.dieterblancke.proxysync.common.plugin.ProxySyncPlugin;
 import be.dieterblancke.proxysync.common.util.StreamUtil;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.io.InputStream;
 import java.util.*;
@@ -306,5 +308,13 @@ public class RedisDataManager
         playerProxyCache.cleanUp();
         playerNameCache.cleanUp();
         playerIpCache.cleanUp();
+    }
+
+    public void broadcastToProxy( final String proxyId, final Component component )
+    {
+        this.redisManager.publishToChannel(
+                "proxysync-" + proxyId,
+                "proxysync:broadcast-" + GsonComponentSerializer.gson().serialize( component )
+        );
     }
 }
