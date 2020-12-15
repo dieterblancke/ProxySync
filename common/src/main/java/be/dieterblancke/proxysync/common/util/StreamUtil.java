@@ -11,18 +11,17 @@ public final class StreamUtil
     {
     }
 
-    public static String streamToString( InputStream is )
+    public static String streamToString( final InputStream is )
     {
         if ( is == null )
         {
             return null;
         }
 
-        try
+        try ( InputStreamReader isr = new InputStreamReader( is );
+              BufferedReader br = new BufferedReader( isr ) )
         {
-            InputStreamReader isr = new InputStreamReader( is );
-            BufferedReader br = new BufferedReader( isr );
-            StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             String str;
             while ( ( str = br.readLine() ) != null )
             {
@@ -32,7 +31,6 @@ public final class StreamUtil
         }
         catch ( Exception exception )
         {
-            // todo handle file not found, ...
             exception.printStackTrace();
             return null;
         }

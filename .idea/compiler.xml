@@ -7,9 +7,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="bungee" />
-        <module name="common" />
         <module name="velocity" />
         <module name="api" />
+        <module name="common" />
       </profile>
     </annotationProcessing>
   </component>

@@ -9,6 +9,7 @@ import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisConnectionException;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.async.RedisAsyncCommands;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.pubsub.RedisPubSubAdapter;
 import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
@@ -18,6 +19,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -81,8 +83,7 @@ public class StandaloneRedisManager implements RedisManager
     {
         try ( StatefulRedisConnection<String, String> connection = pool.borrowObject() )
         {
-            RedisCommands<String, String> commands = connection.sync();
-            consumer.accept( commands );
+            consumer.accept( connection.sync() );
         }
         catch ( Exception e )
         {
@@ -93,17 +94,44 @@ public class StandaloneRedisManager implements RedisManager
     @Override
     public <R> R execute( Function<RedisCommands<String, String>, R> function )
     {
+        R result = null;
         try ( StatefulRedisConnection<String, String> connection = pool.borrowObject() )
         {
-            RedisCommands<String, String> commands = connection.sync();
-            R result = function.apply( commands );
-            return result;
+            result = function.apply( connection.sync() );
         }
         catch ( Exception e )
         {
             e.printStackTrace();
-            return null;
         }
+        return result;
+    }
+
+    @Override
+    public void executeAsync( Consumer<RedisAsyncCommands<String, String>> consumer )
+    {
+        try ( StatefulRedisConnection<String, String> connection = pool.borrowObject() )
+        {
+            consumer.accept( connection.async() );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public <R> CompletableFuture<R> executeAsync( Function<RedisAsyncCommands<String, String>, CompletableFuture<R>> function )
+    {
+        CompletableFuture<R> result = null;
+        try ( StatefulRedisConnection<String, String> connection = pool.borrowObject() )
+        {
+            result = function.apply( connection.async() );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override
@@ -133,7 +161,7 @@ public class StandaloneRedisManager implements RedisManager
     @Override
     public void publishToChannel( String channel, String message )
     {
-        this.pubSubConnection.sync().publish( channel, message );
+        this.pubSubConnection.async().publish( channel, message );
     }
 
     private static class PubSubListener extends RedisPubSubAdapter<String, String>

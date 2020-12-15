@@ -13,6 +13,7 @@ public class BridgedUser implements User
     private final UUID uniqueId;
     private final RedisDataManager redisDataManager;
 
+    private String userName;
     private String ip;
     private Proxy proxy;
     private String server;
@@ -32,7 +33,11 @@ public class BridgedUser implements User
     @Override
     public String getUsername()
     {
-        return ""; // todo
+        if ( this.userName == null )
+        {
+            this.userName = this.redisDataManager.getPlayerName( this.uniqueId );
+        }
+        return this.userName;
     }
 
     @Override

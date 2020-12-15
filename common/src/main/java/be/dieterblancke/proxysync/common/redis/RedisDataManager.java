@@ -23,6 +23,7 @@ public class RedisDataManager
 
     public static final String PREFIX_USER = "user:";
     public static final String FIELD_USER_IP = "ip";
+    public static final String FIELD_USER_NAME = "username";
     public static final String FIELD_USER_PROXY = "proxy";
     public static final String FIELD_USER_SERVER = "server";
 
@@ -30,6 +31,7 @@ public class RedisDataManager
     private final RedisManager redisManager;
 
     private final Cache<UUID, String> playerProxyCache;
+    private final Cache<UUID, String> playerNameCache;
     private final Cache<UUID, String> playerIpCache;
 
     private LuaScript getTotalPlayerCountScript;
@@ -41,16 +43,24 @@ public class RedisDataManager
         this.redisManager = plugin.getRedisManager();
 
         this.playerProxyCache = CacheBuilder.newBuilder()
-                .maximumSize( 1000 )
-                .expireAfterWrite( 1, TimeUnit.HOURS )
+                .maximumSize( 5000 )
+                .expireAfterAccess( 30, TimeUnit.MINUTES )
+                .build();
+
+        this.playerNameCache = CacheBuilder.newBuilder()
+                .maximumSize( 5000 )
+                .expireAfterAccess( 30, TimeUnit.MINUTES )
                 .build();
 
         this.playerIpCache = CacheBuilder.newBuilder()
-                .maximumSize( 1000 )
-                .expireAfterWrite( 1, TimeUnit.HOURS )
+                .maximumSize( 5000 )
+                .expireAfterAccess( 30, TimeUnit.MINUTES )
                 .build();
 
         registerScripts();
+
+        // Force cleaning caches every 5 minutes
+        plugin.getSchedulerAdapter().asyncRepeating( this::cleanupCaches, 5, TimeUnit.MINUTES );
     }
 
     private void registerScripts()
@@ -61,11 +71,10 @@ public class RedisDataManager
 
     private LuaScript registerScript( String resourcePath )
     {
-        InputStream is = this.plugin.getBootstrap().getResourceStream( resourcePath );
-        String script = StreamUtil.streamToString( is );
+        final InputStream is = this.plugin.getBootstrap().getResourceStream( resourcePath );
+        final String script = StreamUtil.streamToString( is );
         if ( script == null )
         {
-            // todo throw error?
             return null;
         }
         return this.redisManager.loadScript( script );
@@ -80,7 +89,8 @@ public class RedisDataManager
         {
             commands.multi();
 
-            Map<String, String> playerData = new HashMap<>();
+            final Map<String, String> playerData = new HashMap<>();
+            playerData.put( FIELD_USER_NAME, user.getUsername() );
             playerData.put( FIELD_USER_IP, user.getIp() );
             playerData.put( FIELD_USER_PROXY, user.getProxy().getId() );
             playerData.put( FIELD_USER_SERVER, user.getServer() );
@@ -99,7 +109,7 @@ public class RedisDataManager
         this.redisManager.execute( commands ->
         {
             commands.multi();
-            commands.hdel( key, FIELD_USER_IP, FIELD_USER_PROXY, FIELD_USER_SERVER );
+            commands.hdel( key, FIELD_USER_NAME, FIELD_USER_IP, FIELD_USER_PROXY, FIELD_USER_SERVER );
             commands.srem( proxyOnlineKey, user.getUniqueId().toString() );
             commands.exec();
         } );
@@ -130,11 +140,24 @@ public class RedisDataManager
         }
     }
 
-    ;
+    public String getPlayerName( final UUID uuid )
+    {
+        try
+        {
+            return this.playerNameCache.get( uuid, () -> this.redisManager.execute( commands ->
+            {
+                final String userKey = PREFIX_USER + uuid.toString();
+                return commands.hget( userKey, FIELD_USER_NAME );
+            } ) );
+        }
+        catch ( ExecutionException e )
+        {
+            throw new RuntimeException( "Unable to get proxy for " + uuid, e );
+        }
+    }
 
     public Proxy getPlayerProxy( UUID id )
     {
-
         try
         {
             String playerProxyId = this.playerProxyCache.get( id, () -> this.redisManager.execute( commands ->
@@ -165,6 +188,7 @@ public class RedisDataManager
     {
         final String key = PREFIX_PROXY_HEARTBEAT + this.plugin.getConfiguration().getProxyConfiguration().getProxyId();
         final long heartbeatInterval = this.plugin.getConfiguration().getProxyConfiguration().getHeartbeatInterval() * 2;
+
         this.redisManager.execute( commands ->
         {
             commands.setex( key, heartbeatInterval, "1" );
@@ -175,6 +199,7 @@ public class RedisDataManager
     {
         final String key = PREFIX_PROXY_HEARTBEAT + this.plugin.getConfiguration().getProxyConfiguration().getProxyId();
         final String proxyOnlineKey = PREFIX_PROXY_ONLINE + this.plugin.getConfiguration().getProxyConfiguration().getProxyId();
+
         this.redisManager.execute( commands ->
         {
             commands.del( key );
@@ -233,5 +258,12 @@ public class RedisDataManager
     {
         final String key = PREFIX_USER + playerId;
         return this.redisManager.execute( commands -> commands.exists( key ) == 1L );
+    }
+
+    private void cleanupCaches()
+    {
+        playerProxyCache.cleanUp();
+        playerNameCache.cleanUp();
+        playerIpCache.cleanUp();
     }
 }
