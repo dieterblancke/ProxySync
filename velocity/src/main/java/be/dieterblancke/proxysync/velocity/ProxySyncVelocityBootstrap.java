@@ -20,7 +20,7 @@ import java.nio.file.Path;
 @Plugin(
         id = "proxysync",
         name = "ProxySync",
-        version = "@Version@",
+        version = "0.0.1",
         authors = { "goofydev", "didjee2" }
 )
 public class ProxySyncVelocityBootstrap implements ProxySyncBootstrap
@@ -34,7 +34,7 @@ public class ProxySyncVelocityBootstrap implements ProxySyncBootstrap
     private final VelocitySchedulerAdapter schedulerAdapter;
 
     @Inject
-    public ProxySyncVelocityBootstrap( Logger logger, @DataDirectory Path dataDirectory, ProxyServer proxyServer )
+    public ProxySyncVelocityBootstrap( final ProxyServer proxyServer, final Logger logger, final @DataDirectory Path dataDirectory )
     {
         this.logger = new Slf4jLoggerWrapper( logger );
         this.proxyServer = proxyServer;
@@ -44,13 +44,13 @@ public class ProxySyncVelocityBootstrap implements ProxySyncBootstrap
     }
 
     @Subscribe
-    public void onEnable( ProxyInitializeEvent event )
+    public void onEnable( final ProxyInitializeEvent event )
     {
         this.plugin.enable();
     }
 
     @Subscribe
-    public void onDisable( ProxyShutdownEvent event )
+    public void onDisable( final ProxyShutdownEvent event )
     {
         this.plugin.disable();
     }

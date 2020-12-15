@@ -1,4 +1,4 @@
-name: ProxySync-bungeecord
-main: be.dieterblancke.bridger.bungee.ProxySyncBungeeBootstrap
+name: ProxySync
+main: be.dieterblancke.proxysync.bungee.ProxySyncBungeeBootstrap
 version: 1.0
 author: goofydev

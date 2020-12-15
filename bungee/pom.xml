@@ -83,8 +83,8 @@
                             <shadedPattern>be.dieterblancke.proxysync.internal.kyori</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>javax</pattern>
-                            <shadedPattern>be.dieterblancke.proxysync.internal.javax</shadedPattern>
+                            <pattern>javax.annotation</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.javax.annotation</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>io.netty</pattern>
@@ -95,16 +95,28 @@
                             <shadedPattern>be.dieterblancke.proxysync.internal.lettuce</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>com</pattern>
-                            <shadedPattern>be.dieterblancke.proxysync.internal.com</shadedPattern>
-                        </relocation>
-                        <relocation>
                             <pattern>com.moandjiezana</pattern>
                             <shadedPattern>be.dieterblancke.proxysync.internal.moandjiezana</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>com.google</pattern>
-                            <shadedPattern>be.dieterblancke.proxysync.internal.google</shadedPattern>
+                            <pattern>com.google.thirdparty</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.google.thirdparty</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.google.j2objc</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.google.j2objc</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.google.gson</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.google.gson</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.google.errorprone</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.google.errorprone</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.google.common</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.google.common</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
