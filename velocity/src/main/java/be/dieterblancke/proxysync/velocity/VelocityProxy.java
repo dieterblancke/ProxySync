@@ -6,6 +6,7 @@ import be.dieterblancke.proxysync.common.plugin.ProxySyncPlugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.kyori.text.Component;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ public class VelocityProxy implements Proxy
     private final ProxySyncPlugin plugin;
     private final ProxyServer proxyServer;
 
-    public VelocityProxy( ProxySyncPlugin plugin, ProxyServer proxyServer )
+    public VelocityProxy( final ProxySyncPlugin plugin, final ProxyServer proxyServer )
     {
         this.plugin = plugin;
         this.proxyServer = proxyServer;
@@ -34,25 +35,37 @@ public class VelocityProxy implements Proxy
     }
 
     @Override
-    public User getUser( UUID uniqueId )
+    public Optional<User> getUser( final UUID uniqueId )
     {
         return this.plugin.getUserProvider().get( uniqueId );
     }
 
     @Override
-    public boolean hasUser( UUID uniqueId )
+    public Optional<User> getUser( final String userName )
+    {
+        return this.plugin.getUserProvider().get( userName );
+    }
+
+    @Override
+    public boolean hasUser( final UUID uniqueId )
     {
         return this.plugin.getUserProvider().has( uniqueId );
     }
 
     @Override
-    public void broadcastMessage( Component component )
+    public boolean hasUser( final String userName )
+    {
+        return this.plugin.getUserProvider().has( userName );
+    }
+
+    @Override
+    public void broadcastMessage( final Component component )
     {
         this.proxyServer.broadcast( component );
     }
 
     @Override
-    public void executeCommand( String... command )
+    public void executeCommand( final String... command )
     {
         this.proxyServer.getCommandManager().execute( ProxySyncCommandSource.instance, String.join( " ", command ) );
     }

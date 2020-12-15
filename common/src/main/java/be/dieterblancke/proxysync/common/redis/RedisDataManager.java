@@ -20,8 +20,9 @@ public class RedisDataManager
 
     public static final String PREFIX_PROXY_ONLINE = "proxy:online:";
     public static final String PREFIX_PROXY_HEARTBEAT = "proxy:heartbeats:";
-
     public static final String PREFIX_USER = "user:";
+    public static final String PREFIX_UUID = "uuid:";
+
     public static final String FIELD_USER_IP = "ip";
     public static final String FIELD_USER_NAME = "username";
     public static final String FIELD_USER_PROXY = "proxy";
@@ -32,6 +33,7 @@ public class RedisDataManager
 
     private final Cache<UUID, String> playerProxyCache;
     private final Cache<UUID, String> playerNameCache;
+    private final Cache<String, UUID> playerUuidCache;
     private final Cache<UUID, String> playerIpCache;
 
     private LuaScript getTotalPlayerCountScript;
@@ -48,6 +50,11 @@ public class RedisDataManager
                 .build();
 
         this.playerNameCache = CacheBuilder.newBuilder()
+                .maximumSize( 5000 )
+                .expireAfterAccess( 30, TimeUnit.MINUTES )
+                .build();
+
+        this.playerUuidCache = CacheBuilder.newBuilder()
                 .maximumSize( 5000 )
                 .expireAfterAccess( 30, TimeUnit.MINUTES )
                 .build();
@@ -96,6 +103,8 @@ public class RedisDataManager
             playerData.put( FIELD_USER_SERVER, user.getServer() );
             commands.hset( key, playerData );
 
+            commands.set( PREFIX_UUID + user.getUsername(), user.getUniqueId().toString() );
+
             commands.sadd( proxyOnlineKey, user.getUniqueId().toString() );
             commands.exec();
         } );
@@ -136,7 +145,7 @@ public class RedisDataManager
         }
         catch ( ExecutionException e )
         {
-            throw new RuntimeException( "Unable to get proxy for " + id, e );
+            throw new RuntimeException( "Unable to get player ip for " + id, e );
         }
     }
 
@@ -152,7 +161,23 @@ public class RedisDataManager
         }
         catch ( ExecutionException e )
         {
-            throw new RuntimeException( "Unable to get proxy for " + uuid, e );
+            throw new RuntimeException( "Unable to get player name for " + uuid, e );
+        }
+    }
+
+    public UUID getPlayerUuid( final String userName )
+    {
+        try
+        {
+            return this.playerUuidCache.get( userName, () -> this.redisManager.execute( commands ->
+            {
+                final String uuid = commands.get( PREFIX_UUID + userName );
+                return uuid == null ? null : UUID.fromString( uuid );
+            } ) );
+        }
+        catch ( ExecutionException e )
+        {
+            throw new RuntimeException( "Unable to get player uuid for " + userName, e );
         }
     }
 
@@ -227,6 +252,22 @@ public class RedisDataManager
         return this.redisManager.execute( commands ->
         {
             return commands.sismember( proxyOnlineKey, playerId.toString() );
+        } );
+    }
+
+    public boolean isUserConnectedToProxy( String proxyId, String playerName )
+    {
+        final String proxyOnlineKey = PREFIX_PROXY_ONLINE + proxyId;
+        return this.redisManager.execute( commands ->
+        {
+            final UUID uuid = this.getPlayerUuid( playerName );
+
+            if ( uuid == null )
+            {
+                return false;
+            }
+
+            return commands.sismember( proxyOnlineKey, uuid.toString() );
         } );
     }
 

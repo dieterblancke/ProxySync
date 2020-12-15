@@ -5,6 +5,7 @@ import be.dieterblancke.proxysync.api.model.user.User;
 import be.dieterblancke.proxysync.common.redis.RedisDataManager;
 import net.kyori.text.Component;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public class SyncedProxy implements Proxy
 
     private Set<User> users;
 
-    public SyncedProxy( String id, RedisDataManager redisDataManager )
+    public SyncedProxy( final String id, final RedisDataManager redisDataManager )
     {
         this.id = id;
         this.redisDataManager = redisDataManager;
@@ -39,33 +40,53 @@ public class SyncedProxy implements Proxy
     }
 
     @Override
-    public User getUser( UUID uniqueId )
+    public Optional<User> getUser( final UUID uniqueId )
     {
         if ( !hasUser( uniqueId ) )
         {
-            return null;
+            return Optional.empty();
         }
-        return this.getUsers().stream().filter( player -> player.getUniqueId() == uniqueId ).findFirst().orElse( null );
+        return this.getUsers().stream().filter( player -> player.getUniqueId() == uniqueId ).findFirst();
     }
 
     @Override
-    public boolean hasUser( UUID uniqueId )
+    public Optional<User> getUser( final String userName )
+    {
+        if ( !hasUser( userName ) )
+        {
+            return Optional.empty();
+        }
+        return this.getUsers().stream().filter( player -> player.getUsername().equals( userName ) ).findFirst();
+    }
+
+    @Override
+    public boolean hasUser( final UUID uniqueId )
     {
         if ( this.users == null )
         {
             return this.redisDataManager.isUserConnectedToProxy( this.id, uniqueId );
         }
-        return this.users.stream().allMatch( player -> player.getUniqueId().equals( uniqueId ) );
+        return this.users.stream().anyMatch( player -> player.getUniqueId().equals( uniqueId ) );
     }
 
     @Override
-    public void broadcastMessage( Component component )
+    public boolean hasUser( final String userName )
+    {
+        if ( this.users == null )
+        {
+            return this.redisDataManager.isUserConnectedToProxy( this.id, userName );
+        }
+        return this.users.stream().anyMatch( player -> player.getUsername().equals( userName ) );
+    }
+
+    @Override
+    public void broadcastMessage( final Component component )
     {
         // todo
     }
 
     @Override
-    public void executeCommand( String... command )
+    public void executeCommand( final String... command )
     {
         // todo
     }

@@ -42,12 +42,14 @@ public class PlayerListener
     @Subscribe( order = PostOrder.FIRST )
     public void onServerPreConnectEvent( ServerPreConnectEvent event )
     {
-        User user = this.plugin.getUserProvider().get( event.getPlayer().getUniqueId() );
-        String from = user.getServer();
-        String to = event.getResult().getServer().isPresent() ? event.getResult().getServer().get().getServerInfo().getName() : null;
+        this.plugin.getUserProvider().get( event.getPlayer().getUniqueId() ).ifPresent( user ->
+        {
+            final String from = user.getServer();
+            final String to = event.getResult().getServer().isPresent() ? event.getResult().getServer().get().getServerInfo().getName() : null;
 
-        this.plugin.getRedisDataManager().changeUserServer( user, to );
-        this.plugin.getEventBus().post( new UserServerChangeEvent( user, from, to ) );
+            this.plugin.getRedisDataManager().changeUserServer( user, to );
+            this.plugin.getEventBus().post( new UserServerChangeEvent( user, from, to ) );
+        } );
     }
 
     @Subscribe

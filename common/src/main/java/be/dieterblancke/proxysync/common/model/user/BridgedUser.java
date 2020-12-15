@@ -18,10 +18,16 @@ public class BridgedUser implements User
     private Proxy proxy;
     private String server;
 
-    public BridgedUser( UUID uniqueId, RedisDataManager redisDataManager )
+    public BridgedUser( final UUID uniqueId, final RedisDataManager redisDataManager )
     {
         this.uniqueId = uniqueId;
         this.redisDataManager = redisDataManager;
+    }
+
+    public BridgedUser( final UUID uniqueId, final String userName, final RedisDataManager redisDataManager )
+    {
+        this( uniqueId, redisDataManager );
+        this.userName = userName;
     }
 
     @Override

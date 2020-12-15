@@ -3,6 +3,7 @@ package be.dieterblancke.proxysync.api.model.proxy;
 import be.dieterblancke.proxysync.api.model.user.User;
 import net.kyori.text.Component;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,7 +29,15 @@ public interface Proxy
      * @param id of the user to retrieve
      * @return instance of {@link User} or null if user not found
      */
-    User getUser( UUID id );
+    Optional<User> getUser( UUID id );
+
+    /**
+     * Gets a specific user that is connected to the proxy.
+     *
+     * @param userName of the user to retrieve
+     * @return instance of {@link User} or null if user not found
+     */
+    Optional<User> getUser( String userName );
 
     /**
      * Check if a user is connected to this proxy.
@@ -37,6 +46,14 @@ public interface Proxy
      * @return true if found
      */
     boolean hasUser( UUID id );
+
+    /**
+     * Check if a user is connected to this proxy.
+     *
+     * @param userName of the user to check for
+     * @return true if found
+     */
+    boolean hasUser( String userName );
 
     /**
      * Broadcast a message to every user connected to the proxy.

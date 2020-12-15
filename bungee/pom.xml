@@ -49,5 +49,82 @@
 
     <build>
         <finalName>ProxySync-${project.artifactId} v${project.version}</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>reactor</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.reactor</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.apache</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.apache</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.checkerframework</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.checkerframework</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.codehaus</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.codehaus</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.reactivestreams</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.reactivestreams</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>net.kyori</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.kyori</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>javax</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.javax</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>io.netty</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.netty</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>io.lettuce</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.lettuce</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.com</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.moandjiezana</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.moandjiezana</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.google</pattern>
+                            <shadedPattern>be.dieterblancke.proxysync.internal.google</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 </project>

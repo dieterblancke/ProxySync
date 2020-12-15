@@ -39,12 +39,14 @@ public class PlayerListener implements Listener
     @EventHandler
     public void onServerChange( ServerConnectEvent event )
     {
-        User user = this.plugin.getUserProvider().get( event.getPlayer().getUniqueId() );
-        String from = user.getServer();
-        String to = event.getTarget().getName();
+        this.plugin.getUserProvider().get( event.getPlayer().getUniqueId() ).ifPresent( user ->
+        {
+            final String from = user.getServer();
+            final String to = event.getTarget().getName();
 
-        this.plugin.getRedisDataManager().changeUserServer( user, to );
-        this.plugin.getEventBus().post( new UserServerChangeEvent( user, from, to ) );
+            this.plugin.getRedisDataManager().changeUserServer( user, to );
+            this.plugin.getEventBus().post( new UserServerChangeEvent( user, from, to ) );
+        } );
     }
 
     @EventHandler

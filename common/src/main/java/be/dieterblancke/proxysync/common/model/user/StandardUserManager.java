@@ -17,23 +17,25 @@ public class StandardUserManager implements UserManager
     }
 
     @Override
-    public User getUser( UUID uniqueId )
+    public User getUser( final UUID uniqueId )
     {
-        if ( this.plugin.getCurrentProxy().hasUser( uniqueId ) )
-        {
-            return this.plugin.getCurrentProxy().getUser( uniqueId );
-        }
-        return new BridgedUser( uniqueId, this.plugin.getRedisDataManager() );
+        return this.plugin.getCurrentProxy().getUser( uniqueId )
+                .orElseGet( () -> new BridgedUser( uniqueId, this.plugin.getRedisDataManager() ) );
     }
 
     @Override
-    public User getUser( String username )
+    public User getUser( final String username )
     {
-        return null; // todo
+        return this.plugin.getCurrentProxy().getUser( username )
+                .orElseGet( () -> new BridgedUser(
+                        this.plugin.getRedisDataManager().getPlayerUuid( username ),
+                        username,
+                        this.plugin.getRedisDataManager()
+                ) );
     }
 
     @Override
-    public boolean isUserOnline( UUID uniqueId )
+    public boolean isUserOnline( final UUID uniqueId )
     {
         if ( this.plugin.getCurrentProxy().hasUser( uniqueId ) )
         {
