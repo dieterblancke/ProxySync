@@ -4,40 +4,40 @@ import be.dieterblancke.proxysync.common.config.RedisConfiguration;
 import be.dieterblancke.proxysync.common.plugin.ProxySyncPlugin;
 import be.dieterblancke.proxysync.common.redis.LuaScript;
 import be.dieterblancke.proxysync.common.redis.RedisManager;
-import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisConnectionException;
 import io.lettuce.core.RedisURI;
-import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.cluster.RedisClusterClient;
+import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import io.lettuce.core.cluster.api.async.RedisClusterAsyncCommands;
 import io.lettuce.core.cluster.api.sync.RedisClusterCommands;
-import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
+import io.lettuce.core.cluster.pubsub.StatefulRedisClusterPubSubConnection;
 import io.lettuce.core.support.ConnectionPoolSupport;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class StandaloneRedisManager implements RedisManager
+public class ClusteredRedisManager implements RedisManager
 {
-    private final RedisClient redisClient;
-    private final GenericObjectPool<StatefulRedisConnection<String, String>> pool;
-    private final StatefulRedisPubSubConnection<String, String> pubSubConnection;
 
-    public StandaloneRedisManager( ProxySyncPlugin plugin, RedisConfiguration configuration ) throws RuntimeException
+    private final RedisClusterClient redisClient;
+    private final GenericObjectPool<StatefulRedisClusterConnection<String, String>> pool;
+    private final StatefulRedisClusterPubSubConnection<String, String> pubSubConnection;
+
+    public ClusteredRedisManager( ProxySyncPlugin plugin, RedisConfiguration configuration ) throws RuntimeException
     {
-        final Optional<RedisURI> connectionUri = configuration.getRedisURIs().stream().findFirst();
-        if ( !connectionUri.isPresent() )
+        final List<RedisURI> connectionUris = configuration.getRedisURIs();
+        if ( connectionUris.isEmpty() )
         {
             throw new IllegalStateException( "No redis connection details found, at least one is required." );
         }
 
-        final RedisURI redisURI = connectionUri.get();
-        this.redisClient = RedisClient.create( redisURI );
+        this.redisClient = RedisClusterClient.create( connectionUris );
 
-        StatefulRedisConnection<String, String> connection = null;
+        StatefulRedisClusterConnection<String, String> connection = null;
         try
         {
             connection = this.redisClient.connect();
@@ -64,7 +64,7 @@ public class StandaloneRedisManager implements RedisManager
         }
         catch ( RedisConnectionException exception )
         {
-            throw new IllegalStateException( "Unable to connect to redis! " + redisURI.getHost() + ":" + redisURI.getPort() );
+            throw new IllegalStateException( "Unable to connect to redis!" );
         }
         finally
         {
@@ -85,7 +85,7 @@ public class StandaloneRedisManager implements RedisManager
     @Override
     public void execute( Consumer<RedisClusterCommands<String, String>> consumer )
     {
-        try ( StatefulRedisConnection<String, String> connection = pool.borrowObject() )
+        try ( StatefulRedisClusterConnection<String, String> connection = pool.borrowObject() )
         {
             consumer.accept( connection.sync() );
         }
@@ -99,7 +99,7 @@ public class StandaloneRedisManager implements RedisManager
     public <R> R execute( Function<RedisClusterCommands<String, String>, R> function )
     {
         R result = null;
-        try ( StatefulRedisConnection<String, String> connection = pool.borrowObject() )
+        try ( StatefulRedisClusterConnection<String, String> connection = pool.borrowObject() )
         {
             result = function.apply( connection.sync() );
         }
@@ -113,7 +113,7 @@ public class StandaloneRedisManager implements RedisManager
     @Override
     public void executeAsync( Consumer<RedisClusterAsyncCommands<String, String>> consumer )
     {
-        try ( StatefulRedisConnection<String, String> connection = pool.borrowObject() )
+        try ( StatefulRedisClusterConnection<String, String> connection = pool.borrowObject() )
         {
             consumer.accept( connection.async() );
         }
@@ -127,7 +127,7 @@ public class StandaloneRedisManager implements RedisManager
     public <R> CompletableFuture<R> executeAsync( Function<RedisClusterAsyncCommands<String, String>, CompletableFuture<R>> function )
     {
         CompletableFuture<R> result = null;
-        try ( StatefulRedisConnection<String, String> connection = pool.borrowObject() )
+        try ( StatefulRedisClusterConnection<String, String> connection = pool.borrowObject() )
         {
             result = function.apply( connection.async() );
         }

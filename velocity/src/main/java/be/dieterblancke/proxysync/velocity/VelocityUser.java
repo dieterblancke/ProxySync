@@ -4,7 +4,7 @@ import be.dieterblancke.proxysync.api.model.proxy.Proxy;
 import be.dieterblancke.proxysync.api.model.user.User;
 import be.dieterblancke.proxysync.common.plugin.ProxySyncPlugin;
 import com.velocitypowered.api.proxy.Player;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 
 import java.util.UUID;
 

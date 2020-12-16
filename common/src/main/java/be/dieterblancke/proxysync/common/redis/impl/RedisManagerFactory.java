@@ -13,12 +13,14 @@ public final class RedisManagerFactory
 
     public static RedisManager create( ProxySyncPlugin plugin )
     {
-        RedisConfiguration redisConfiguration = plugin.getConfiguration().getRedisConfiguration();
+        final RedisConfiguration redisConfiguration = plugin.getConfiguration().getRedisConfiguration();
         if ( redisConfiguration.getRedisURIs().size() > 1 )
         {
-            return null; // cluster
+            plugin.getLogger().info( "Detected " + redisConfiguration.getRedisURIs().size() + " configured connections, using ClusteredRedisManager." );
+            return new ClusteredRedisManager( plugin, redisConfiguration );
         }
 
+        plugin.getLogger().info( "Detected " + redisConfiguration.getRedisURIs().size() + " configured connections, using StandaloneRedisManager." );
         return new StandaloneRedisManager( plugin, redisConfiguration );
     }
 }

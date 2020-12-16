@@ -4,7 +4,7 @@ import be.dieterblancke.proxysync.api.model.proxy.Proxy;
 import be.dieterblancke.proxysync.api.model.user.User;
 import be.dieterblancke.proxysync.common.plugin.ProxySyncPlugin;
 import com.velocitypowered.api.proxy.ProxyServer;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 
 import java.util.Optional;
 import java.util.Set;
@@ -61,12 +61,12 @@ public class VelocityProxy implements Proxy
     @Override
     public void broadcastMessage( final Component component )
     {
-        this.proxyServer.broadcast( component );
+        this.proxyServer.sendMessage( component );
     }
 
     @Override
     public void executeCommand( final String... command )
     {
-        this.proxyServer.getCommandManager().execute( ProxySyncCommandSource.instance, String.join( " ", command ) );
+        this.proxyServer.getCommandManager().executeAsync( ProxySyncCommandSource.instance, String.join( " ", command ) );
     }
 }

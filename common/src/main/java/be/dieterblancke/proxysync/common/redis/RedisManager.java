@@ -1,7 +1,8 @@
 package be.dieterblancke.proxysync.common.redis;
 
 import io.lettuce.core.api.async.RedisAsyncCommands;
-import io.lettuce.core.api.sync.RedisCommands;
+import io.lettuce.core.cluster.api.async.RedisClusterAsyncCommands;
+import io.lettuce.core.cluster.api.sync.RedisClusterCommands;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -9,13 +10,13 @@ import java.util.function.Function;
 
 public interface RedisManager
 {
-    void execute( Consumer<RedisCommands<String, String>> consumer );
+    void execute( Consumer<RedisClusterCommands<String, String>> consumer );
 
-    <R> R execute( Function<RedisCommands<String, String>, R> function );
+    <R> R execute( Function<RedisClusterCommands<String, String>, R> function );
 
-    void executeAsync( Consumer<RedisAsyncCommands<String, String>> consumer );
+    void executeAsync( Consumer<RedisClusterAsyncCommands<String, String>> consumer );
 
-    <R> CompletableFuture<R> executeAsync( Function<RedisAsyncCommands<String, String>, CompletableFuture<R>> function );
+    <R> CompletableFuture<R> executeAsync( Function<RedisClusterAsyncCommands<String, String>, CompletableFuture<R>> function );
 
     void closeConnections();
 

@@ -3,6 +3,11 @@ proxy-id = "proxy-1"
 heartbeat-interval = 5
 override-player-count = true
 
+[redis.pooling]
+minIdle = 4
+maxIdle = 8
+maxTotal = 12
+
 [[redis.connection]]
 host = "127.0.0.1"
 port = 6379

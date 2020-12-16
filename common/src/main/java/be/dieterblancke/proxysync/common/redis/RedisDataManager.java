@@ -96,8 +96,6 @@ public class RedisDataManager
 
         this.redisManager.execute( commands ->
         {
-            commands.multi();
-
             final Map<String, String> playerData = new HashMap<>();
             playerData.put( FIELD_USER_NAME, user.getUsername() );
             playerData.put( FIELD_USER_IP, user.getIp() );
@@ -108,7 +106,6 @@ public class RedisDataManager
             commands.set( PREFIX_UUID + user.getUsername(), user.getUniqueId().toString() );
 
             commands.sadd( proxyOnlineKey, user.getUniqueId().toString() );
-            commands.exec();
         } );
     }
 
@@ -119,10 +116,8 @@ public class RedisDataManager
 
         this.redisManager.execute( commands ->
         {
-            commands.multi();
             commands.hdel( key, FIELD_USER_NAME, FIELD_USER_IP, FIELD_USER_PROXY, FIELD_USER_SERVER );
             commands.srem( proxyOnlineKey, user.getUniqueId().toString() );
-            commands.exec();
         } );
     }
 

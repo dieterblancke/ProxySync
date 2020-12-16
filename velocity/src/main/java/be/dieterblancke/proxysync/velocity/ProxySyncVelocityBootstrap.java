@@ -20,7 +20,7 @@ import java.nio.file.Path;
 @Plugin(
         id = "proxysync",
         name = "ProxySync",
-        version = "0.0.1",
+        version = "0.0.2",
         authors = { "goofydev", "didjee2" }
 )
 public class ProxySyncVelocityBootstrap implements ProxySyncBootstrap
