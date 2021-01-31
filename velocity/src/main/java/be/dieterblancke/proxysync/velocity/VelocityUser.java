@@ -55,6 +55,12 @@ public class VelocityUser implements User
     }
 
     @Override
+    public boolean isOnline()
+    {
+        return this.player != null;
+    }
+
+    @Override
     public void sendMessage( Component component )
     {
         this.player.sendMessage( component );

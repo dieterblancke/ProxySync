@@ -43,6 +43,13 @@ public interface User
     String getServer();
 
     /**
+     * Checks if the user is online. This should usually return true, but it's best to check anyways.
+     *
+     * @return true if online, false if offline
+     */
+    boolean isOnline();
+
+    /**
      * Send a message to the user.
      *
      * @param component message to send

@@ -4,6 +4,8 @@ import be.dieterblancke.proxysync.api.model.user.User;
 import be.dieterblancke.proxysync.api.model.user.UserManager;
 import be.dieterblancke.proxysync.common.plugin.ProxySyncPlugin;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class StandardUserManager implements UserManager
@@ -42,5 +44,25 @@ public class StandardUserManager implements UserManager
             return true;
         }
         return this.plugin.getRedisDataManager().isPlayerOnline( uniqueId );
+    }
+
+    @Override
+    public Set<User> getOnlineUsers()
+    {
+        final Set<User> users = new HashSet<>();
+        final Set<String> proxies = this.plugin.getRedisDataManager().getActiveProxies();
+
+        for ( String proxy : proxies )
+        {
+            users.addAll( this.plugin.getRedisDataManager().getUsersOfProxy( proxy ) );
+        }
+
+        return users;
+    }
+
+    @Override
+    public UUID getUuidFromUsername( final String userName )
+    {
+        return this.plugin.getRedisDataManager().getPlayerUuid( userName );
     }
 }
