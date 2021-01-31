@@ -82,13 +82,12 @@ public class SyncedProxy implements Proxy
     @Override
     public void broadcastMessage( final Component component )
     {
-        // todo
         this.redisDataManager.broadcastToProxy( this.id, component );
     }
 
     @Override
-    public void executeCommand( final String... command )
+    public void executeCommand( final String command )
     {
-        // todo
+        this.redisDataManager.executeCommandsOnProxy( this.id, command );
     }
 }

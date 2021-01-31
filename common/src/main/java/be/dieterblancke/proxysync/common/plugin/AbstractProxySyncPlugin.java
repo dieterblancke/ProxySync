@@ -1,6 +1,7 @@
 package be.dieterblancke.proxysync.common.plugin;
 
 import be.dieterblancke.proxysync.api.ProxySyncApi;
+import be.dieterblancke.proxysync.api.event.redis.RedisMessageEvent;
 import be.dieterblancke.proxysync.api.model.proxy.ProxyManager;
 import be.dieterblancke.proxysync.api.model.user.UserManager;
 import be.dieterblancke.proxysync.common.config.Configuration;
@@ -9,6 +10,7 @@ import be.dieterblancke.proxysync.common.model.user.StandardUserManager;
 import be.dieterblancke.proxysync.common.plugin.logging.PluginLogger;
 import be.dieterblancke.proxysync.common.plugin.scheduler.SchedulerAdapter;
 import be.dieterblancke.proxysync.common.plugin.scheduler.SchedulerTask;
+import be.dieterblancke.proxysync.common.plugin.subscribers.ProxySyncDefaultChannelSubscriber;
 import be.dieterblancke.proxysync.common.redis.RedisDataManager;
 import be.dieterblancke.proxysync.common.redis.RedisManager;
 import be.dieterblancke.proxysync.common.redis.impl.RedisManagerFactory;
@@ -55,6 +57,7 @@ public abstract class AbstractProxySyncPlugin implements ProxySyncPlugin, ProxyS
 
         // platform listeners
         this.registerPlatformListeners();
+        this.getEventBus().subscribe( RedisMessageEvent.class, new ProxySyncDefaultChannelSubscriber( this ) );
 
         getLogger().info( "Successfully enabled." );
     }

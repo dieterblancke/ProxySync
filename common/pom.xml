@@ -15,7 +15,7 @@
         <dependency>
             <groupId>be.dieterblancke.proxysync</groupId>
             <artifactId>api</artifactId>
-            <version>0.0.1</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.moandjiezana.toml</groupId>

@@ -1,6 +1,5 @@
 package be.dieterblancke.proxysync.common.redis;
 
-import io.lettuce.core.api.async.RedisAsyncCommands;
 import io.lettuce.core.cluster.api.async.RedisClusterAsyncCommands;
 import io.lettuce.core.cluster.api.sync.RedisClusterCommands;
 
@@ -10,6 +9,7 @@ import java.util.function.Function;
 
 public interface RedisManager
 {
+
     void execute( Consumer<RedisClusterCommands<String, String>> consumer );
 
     <R> R execute( Function<RedisClusterCommands<String, String>, R> function );
@@ -25,4 +25,5 @@ public interface RedisManager
     void subscribeToChannels( String... channels );
 
     void publishToChannel( String channel, String message );
+
 }

@@ -4,6 +4,7 @@ import be.dieterblancke.proxysync.api.model.proxy.Proxy;
 import be.dieterblancke.proxysync.api.model.user.User;
 import be.dieterblancke.proxysync.common.redis.RedisDataManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.UUID;
 
@@ -79,6 +80,14 @@ public class BridgedUser implements User
     @Override
     public void sendMessage( Component component )
     {
-        // todo
+        final String content = GsonComponentSerializer.gson().serialize( component );
+        if ( content.isEmpty() )
+        {
+            return;
+        }
+        this.redisDataManager.getRedisManager().publishToChannel(
+                "proxysync-all",
+                "proxysync:user:" + uniqueId + ":message-" + content
+        );
     }
 }

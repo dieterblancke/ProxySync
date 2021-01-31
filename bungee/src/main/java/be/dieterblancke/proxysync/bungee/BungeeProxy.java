@@ -69,8 +69,8 @@ public class BungeeProxy implements Proxy
     }
 
     @Override
-    public void executeCommand( final String... command )
+    public void executeCommand( final String command )
     {
-        this.proxyServer.getPluginManager().dispatchCommand( ProxySyncCommandSender.instance, String.join( " ", command ) );
+        this.proxyServer.getPluginManager().dispatchCommand( ProxySyncCommandSender.instance, command );
     }
 }

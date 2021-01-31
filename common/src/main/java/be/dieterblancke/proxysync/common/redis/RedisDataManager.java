@@ -307,9 +307,31 @@ public class RedisDataManager
 
     public void broadcastToProxy( final String proxyId, final Component component )
     {
+        final String content = GsonComponentSerializer.gson().serialize( component );
+        if ( content.isEmpty() )
+        {
+            return;
+        }
         this.redisManager.publishToChannel(
                 "proxysync-" + proxyId,
-                "proxysync:broadcast-" + GsonComponentSerializer.gson().serialize( component )
+                "proxysync:broadcast-" + content
+        );
+    }
+
+    public RedisManager getRedisManager()
+    {
+        return redisManager;
+    }
+
+    public void executeCommandsOnProxy( final String proxyId, final String command )
+    {
+        if ( command.isEmpty() )
+        {
+            return;
+        }
+        this.redisManager.publishToChannel(
+                "proxysync-" + proxyId,
+                "proxysync:command-" + command
         );
     }
 }

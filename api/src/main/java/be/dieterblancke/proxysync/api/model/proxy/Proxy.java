@@ -67,5 +67,5 @@ public interface Proxy
      *
      * @param command command to execute
      */
-    void executeCommand( String... command );
+    void executeCommand( String command );
 }

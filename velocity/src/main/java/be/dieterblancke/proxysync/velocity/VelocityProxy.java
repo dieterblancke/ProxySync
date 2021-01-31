@@ -65,8 +65,8 @@ public class VelocityProxy implements Proxy
     }
 
     @Override
-    public void executeCommand( final String... command )
+    public void executeCommand( final String command )
     {
-        this.proxyServer.getCommandManager().executeAsync( ProxySyncCommandSource.instance, String.join( " ", command ) );
+        this.proxyServer.getCommandManager().executeAsync( ProxySyncCommandSource.instance, command );
     }
 }
