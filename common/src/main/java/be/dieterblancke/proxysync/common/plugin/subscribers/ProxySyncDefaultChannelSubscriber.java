@@ -12,6 +12,7 @@ public class ProxySyncDefaultChannelSubscriber implements Consumer<RedisMessageE
 
     private static final String PROXYSYNC_PREFIX = "proxysync:";
     private static final String BROADCAST_PREFIX = "broadcast-";
+    private static final String COMMAND_PREFIX = "command-";
     private static final String MESSAGE_PREFIX = "message-";
     private static final String USER_PREFIX = "user:";
 
@@ -40,6 +41,10 @@ public class ProxySyncDefaultChannelSubscriber implements Consumer<RedisMessageE
             {
                 this.handleBroadcastMessage( action.replaceFirst( BROADCAST_PREFIX, "" ) );
             }
+            else if ( action.startsWith( COMMAND_PREFIX ) )
+            {
+                this.handleCommandMessage( action.replaceFirst( COMMAND_PREFIX, "" ) );
+            }
             else if ( action.startsWith( USER_PREFIX ) )
             {
                 this.handleUserMessage( action.replaceFirst( USER_PREFIX, "" ) );
@@ -52,6 +57,11 @@ public class ProxySyncDefaultChannelSubscriber implements Consumer<RedisMessageE
         final Component component = GsonComponentSerializer.gson().deserialize( message );
 
         proxySyncApi.getProxyManager().getCurrentProxy().broadcastMessage( component );
+    }
+
+    private void handleCommandMessage( final String message )
+    {
+        proxySyncApi.getProxyManager().getCurrentProxy().executeCommand( message );
     }
 
     private void handleUserMessage( final String message )
