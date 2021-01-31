@@ -58,6 +58,12 @@ public class BungeeUser implements User
     }
 
     @Override
+    public boolean isOnline()
+    {
+        return this.player != null;
+    }
+
+    @Override
     public void sendMessage( Component component )
     {
         ( (ProxySyncBungeePlugin) plugin ).getBungeeAudiences().player( player ).sendMessage(

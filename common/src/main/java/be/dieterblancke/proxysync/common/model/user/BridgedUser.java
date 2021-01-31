@@ -78,6 +78,12 @@ public class BridgedUser implements User
     }
 
     @Override
+    public boolean isOnline()
+    {
+        return this.uniqueId != null && this.redisDataManager.isPlayerOnline( this.uniqueId );
+    }
+
+    @Override
     public void sendMessage( Component component )
     {
         final String content = GsonComponentSerializer.gson().serialize( component );

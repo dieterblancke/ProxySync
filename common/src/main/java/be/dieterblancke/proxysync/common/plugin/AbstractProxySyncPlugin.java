@@ -1,6 +1,7 @@
 package be.dieterblancke.proxysync.common.plugin;
 
 import be.dieterblancke.proxysync.api.ProxySyncApi;
+import be.dieterblancke.proxysync.api.ProxySyncApiProvider;
 import be.dieterblancke.proxysync.api.event.redis.RedisMessageEvent;
 import be.dieterblancke.proxysync.api.model.proxy.ProxyManager;
 import be.dieterblancke.proxysync.api.model.user.UserManager;
@@ -50,6 +51,8 @@ public abstract class AbstractProxySyncPlugin implements ProxySyncPlugin, ProxyS
         // managers
         this.userManager = new StandardUserManager( this );
         this.proxyManager = new StandardProxyManager( this );
+
+        ProxySyncApiProvider.setApiInstance( this );
 
         // tasks
         int heartbeatInterval = this.getConfiguration().getProxyConfiguration().getHeartbeatInterval();

@@ -1,5 +1,7 @@
 package be.dieterblancke.proxysync.api.model.proxy;
 
+import be.dieterblancke.proxysync.api.model.user.User;
+
 import java.util.Set;
 
 public interface ProxyManager
@@ -34,5 +36,13 @@ public interface ProxyManager
      * @return list of active proxy ids
      */
     Set<String> getActiveProxies();
+
+    /**
+     * Gets a list of users that are on this server from all proxy instances.
+     *
+     * @param serverName the server to get the player list for
+     * @return a set of all players on this server
+     */
+    Set<User> getPlayersOnServer( String serverName );
 
 }
