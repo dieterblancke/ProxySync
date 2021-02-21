@@ -19,7 +19,7 @@
     <distributionManagement>
         <repository>
             <id>minerift</id>
-            <url>https://minerift.jfrog.io/artifactory/minerift-public/</url>
+            <url>https://repo.minerift.net/public-release/</url>
         </repository>
     </distributionManagement>
 
